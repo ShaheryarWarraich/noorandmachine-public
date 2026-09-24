@@ -1,0 +1,9 @@
+{
+  "name": "test-with-ai",
+  "version": "1.0.0",
+  "description": "Run a crowd of isolated AI agents that choose between options against your brief, many times over.",
+  "private": true,
+  "license": "MIT",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=22" }
+}

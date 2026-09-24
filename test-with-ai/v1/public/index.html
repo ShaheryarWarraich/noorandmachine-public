@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Test with AI — Noor &amp; Machine</title>
+<meta name="theme-color" content="rgb(10,10,10)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✳</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300..800&display=swap">
+<style>
+  /* Noor & Machine brand tokens: noorandmachine.com/design/brand-guidelines */
+  :root {
+    --bg: #0a0a0a;
+    --fg: #f5f3ee;
+    --accent: #e8c46a;
+    --muted: #8a8578;
+    --glow: rgba(232,196,106,0.08);
+    --line: color-mix(in srgb, var(--fg) 8%, transparent);
+    --t: 0;
+    /* Extensions, not in the guidelines: tool states and data series. Blended by the dial like every other token. */
+    --ok: #8cc9a0;
+    --warn: #e0955a;
+    --err: #ef8373;
+    --s1: #86b4e0;
+    --s2: #7cc4b2;
+    --s3: #c4a0e0;
+    --field: color-mix(in srgb, var(--fg) 22%, transparent);
+    --panel: color-mix(in srgb, var(--fg) 4%, var(--bg));
+    /* aliases the page scripts already use */
+    --good: var(--ok); --bad: var(--err); --p1: var(--s1); --p2: var(--s2); --p3: var(--s3); --p4: var(--muted); --judge: var(--muted);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif; }
+  body {
+    min-height: 100vh; padding: 6vw; display: flex; flex-direction: column; font-size: 14px; line-height: 1.55;
+    background: radial-gradient(60% 60% at 15% 0%, var(--glow), transparent 70%) fixed, var(--bg);
+  }
+  @media (max-width: 600px) { body { padding: 2.5rem 16px 3rem; } }
+  a { color: var(--muted); } a:hover { color: var(--fg); }
+
+  .dial { position: fixed; top: 2.5rem; right: 6vw; width: 64px; height: 26px; border-radius: 999px; border: 1px solid var(--muted); cursor: pointer; touch-action: none; user-select: none; z-index: 20; background: var(--bg); }
+  .dial .knob { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); transform: translateX(calc(var(--t) * 38px)); }
+  .dial:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, .co:focus-visible, tr.click:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .eyebrow, footer, .meta { font-size: 0.8rem; letter-spacing: 0.05em; color: var(--muted); }
+  .eyebrow { padding-right: 6rem; }
+  .eyebrow a { text-decoration: none; }
+  header h1 { font-size: clamp(2.4rem, 6.5vw, 5rem); font-weight: 800; line-height: 1.06; letter-spacing: 0.01em; margin: 8vh 0 0; max-width: 22ch; }
+  .lede { max-width: 58ch; margin: 1.6rem 0 0; font-size: clamp(1rem, 1.5vw, 1.1rem); line-height: 1.6; }
+  footer { margin-top: 5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 2rem; }
+
+  .app { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 0 4vw; margin-top: 4rem; border-top: 1px solid var(--line); flex: 1; }
+  aside { padding: 24px 0; }
+  aside > button { width: 100%; margin: 0 0 12px; }
+  .co { padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; display: flex; justify-content: space-between; gap: 8px; color: var(--muted); }
+  .co:hover, .co.on { color: var(--fg); } .co.on span { font-weight: 600; }
+  .co small { white-space: nowrap; font-size: 0.8rem; } .co span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  main { padding: 24px 0; min-width: 0; }
+
+  .card { padding: 24px 0; border-top: 1px solid var(--line); }
+  main > .card:first-child { border-top: 0; padding-top: 0; }
+  h2 { margin: 0 0 6px; font-size: 1.6rem; font-weight: 800; letter-spacing: 0.01em; line-height: 1.15; }
+  h3 { margin: 0 0 14px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  h4 { margin: 18px 0 6px; font-size: 0.85rem; font-weight: 600; }
+  p { max-width: 75ch; }
+  .muted { color: var(--muted); } .small { font-size: 0.8rem; }
+
+  button { font: inherit; font-weight: 600; color: var(--fg); background: transparent; border: 1px solid var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+  button:hover { border-color: var(--fg); }
+  button.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  button.danger { color: var(--err); border-color: color-mix(in srgb, var(--err) 45%, transparent); }
+  button:disabled { opacity: .45; cursor: default; }
+  input, select { font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--field); padding: 8px 10px; border-radius: 6px; }
+  input:focus, select:focus { border-color: var(--fg); }
+  select option { background: var(--bg); color: var(--fg); }
+  input[type=checkbox] { accent-color: var(--fg); }
+  label { display: flex; flex-direction: column; gap: 5px; font-size: 0.8rem; letter-spacing: 0.05em; color: var(--muted); }
+  label.chk { flex-direction: row; align-items: center; gap: 8px; color: var(--fg); letter-spacing: 0; font-size: 0.9rem; }
+  .row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+  .grow { flex: 1; min-width: 240px; } .grow input { width: 100%; }
+
+  .drop { border: 1px dashed var(--field); padding: 36px; text-align: center; color: var(--muted); cursor: pointer; }
+  .drop.over { border-color: var(--fg); background: var(--panel); } .drop img { max-width: 100%; max-height: 260px; }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0 4vw; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 3vw; }
+  .shot { width: 100%; border: 1px solid var(--line); display: block; margin-bottom: 8px; }
+  .shots { max-height: 70vh; overflow: auto; }
+  .item, .logo-item { padding: 8px 0; border-bottom: 1px solid var(--line); } .item:last-child, .logo-item:last-child { border: 0; }
+  .tag { display: inline-block; min-width: 24px; text-align: center; font-weight: 700; color: var(--fg); border: 1px solid var(--field); border-radius: 999px; padding: 0 7px; margin-right: 4px; font-size: 0.85em; }
+
+  .bar, .hbar, .stack { height: 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .bar > i, .hbar > i { display: block; height: 100%; background: var(--fg); transition: width .38s cubic-bezier(.33, 1, .68, 1); }
+  .hbar { min-width: 100px; margin-top: 8px; } .stack { display: flex; min-width: 110px; margin-top: 8px; height: 6px; }
+  .status { font-size: 0.8rem; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+  .status.running, .status.detecting, .status.capturing, .status.queued { color: var(--warn); }
+  .status.done { color: var(--ok); } .status.failed { color: var(--err); }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--warn); margin-right: 6px; vertical-align: middle; }
+
+  .winner { display: flex; gap: 28px; align-items: baseline; }
+  .winner .big { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 800; line-height: 1; }
+  .winner h3 { color: var(--fg); text-transform: none; letter-spacing: 0.01em; font-size: 1.15rem; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { text-align: left; padding: 9px 8px 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.05em; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.click { cursor: pointer; } tr.click:hover td { background: var(--panel); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; font-size: 0.8rem; color: var(--muted); }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .quote { border-left: 1px solid var(--muted); padding: 2px 12px; margin: 8px 0; font-size: 0.9rem; }
+  .err { color: var(--err); margin-top: 8px; }
+  .warnbox { border-left: 2px solid var(--warn); padding: 4px 0 4px 16px; margin-bottom: 24px; max-width: 90ch; }
+
+  .tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--line); margin-bottom: 8px; overflow-x: auto; }
+  .tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 12px 0; color: var(--muted); font-weight: 500; white-space: nowrap; }
+  .tabs button:hover { color: var(--fg); } .tabs button.on { color: var(--fg); border-bottom-color: var(--fg); font-weight: 600; }
+  .mono, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  pre { background: var(--panel); color: var(--fg); border: 1px solid var(--line); padding: 12px; white-space: pre-wrap; word-break: break-word; max-height: 380px; overflow: auto; margin: 0; }
+  .kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; font-size: 0.85rem; } .kv div:nth-child(odd) { color: var(--muted); }
+  .person { padding: 16px 0; border-top: 2px solid var(--c, var(--s1)); }
+  .person.judge { border-top-color: var(--muted); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0 3vw; }
+  .stats > div { border-top: 1px solid var(--line); padding: 12px 0; }
+  .stat { font-size: 2rem; font-weight: 800; }
+  .ev { display: grid; grid-template-columns: 60px 90px 1fr; gap: 8px; font-size: 0.8rem; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .modal { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 70%, transparent); display: flex; justify-content: flex-end; z-index: 30; }
+  .modal > div { background: var(--bg); border-left: 1px solid var(--line); width: min(780px, 100%); height: 100%; overflow: auto; padding: 32px; }
+  @media (max-width: 800px) {
+    .app { grid-template-columns: 1fr; } aside { border-bottom: 1px solid var(--line); }
+    .grid2 { grid-template-columns: 1fr; } .kv { grid-template-columns: 1fr; } .modal > div { padding: 24px 16px; }
+  }
+
+  textarea { font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--field); padding: 10px 12px; border-radius: 6px; width: 100%; resize: vertical; line-height: 1.5; letter-spacing: 0; }
+  textarea:focus { border-color: var(--fg); } textarea:focus-visible, .co:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  label textarea { margin-top: 2px; color: var(--fg); }
+  .persona-edit { border-top: 2px solid var(--c); padding: 14px 0 6px; margin-top: 10px; }
+  .opt-edit { border-top: 1px solid var(--line); padding: 14px 0; }
+  .opt-edit.over { background: var(--panel); }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--field); border-radius: 999px; padding: 3px 4px 3px 12px; font-size: 0.8rem; }
+  .chip .x { border: 0; padding: 0 8px; font-size: 1rem; line-height: 1; }
+  .btnlike { position: relative; display: inline-flex; flex-direction: row; cursor: pointer; font-weight: 600; color: var(--fg); border: 1px solid var(--muted); padding: 8px 16px; border-radius: 999px; font-size: 14px; letter-spacing: 0; }
+  .btnlike:hover { border-color: var(--fg); } .btnlike:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .vh { position: absolute; opacity: 0; width: 1px; height: 1px; overflow: hidden; }
+  .textopt { white-space: pre-wrap; font-size: 0.9rem; margin: 8px 0; max-height: 220px; overflow: auto; }
+  .opt { border-top: 1px solid var(--line); padding: 12px 0; }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .thumbs img { height: 90px; max-width: 200px; object-fit: cover; object-position: top; border: 1px solid var(--line); display: block; }
+  .thumbs.big a { flex: 1 1 280px; } .thumbs.big img { height: auto; width: 100%; max-width: none; object-fit: contain; }
+  ol { padding-left: 1.2rem; } ol li { margin-bottom: 6px; }
+  #main > .row { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="dial" id="dial" role="slider" tabindex="0" aria-label="Theme: dark to bright" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="knob"></div></div>
+<header>
+  <div class="eyebrow">noorandmachine.com / design / test with AI</div>
+  <h1>Test with AI.</h1>
+  <p class="lede">Run several agents at once, each in its own isolated session, and test anything against your brief many times over.</p>
+</header>
+<div class="app">
+  <aside>
+    <h3>Tests</h3>
+    <button class="primary" onclick="select(null)">+ New test</button>
+    <div id="list"></div>
+  </aside>
+  <main id="main"></main>
+</div>
+<footer><a href="mailto:hello@noorandmachine.com">hello@noorandmachine.com</a><span>— MSW/Noor and Machine</span></footer>
+<div id="modal"></div>
+<script>
+const ROLE = { rubric: "Rubric judge", combined: "All-in-one", detect: "Sheet detection" };
+const PC = ["var(--s1)", "var(--s2)", "var(--s3)"];
+let tests = [], current = null, cur = null, tab = null, lastHash = "", openCall = null, F = null, editing = null;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const api = async (url, body) => { const r = await fetch(url, body ? { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) } : {}); return r.json(); };
+const secs = (x) => x.startedAt ? (((x.endedAt || Date.now()) - x.startedAt) / 1000).toFixed(1) + "s" : "";
+const time = (t) => t ? new Date(t).toLocaleTimeString() : "";
+const short = (s) => s ? s.slice(0, 8) : "—";
+const busy = (s) => s === "running" || s === "preparing";
+const pIndex = (t, id) => Math.max(0, t.personas.findIndex((p) => p.id === id));
+const pColor = (t, id) => PC[pIndex(t, id)] || "var(--muted)";
+const pName = (t, id) => t.personas.find((p) => p.id === id)?.name || id;
+const fileUrl = (t, f) => `/files/${t.id}/${encodeURIComponent(f)}`;
+const isImg = (f) => /\.(png|jpe?g|gif|webp|svg)$/i.test(f);
+const roleName = (t, x) => x.role === "persona" ? `${pName(t, x.personaId)}${t.agentsPerPersona > 1 || x.slot > 1 ? ` #${x.slot}` : ""}` : ROLE[x.role] || x.role;
+
+// ---------- list & routing ----------
+async function refreshList() { tests = await api("/api/tests"); renderList(); }
+async function refresh(force) {
+  await refreshList();
+  if (!current || editing !== null) return;
+  cur = await api(`/api/tests/${current}`);
+  const h = JSON.stringify(cur);
+  if (force || h !== lastHash) { lastHash = h; renderTest(cur); }
+  if (openCall) { const x = cur.calls.find((k) => k.id === openCall); if (x && x.status === "running") showCall(openCall, true); }
+}
+function select(id) { current = id; tab = null; lastHash = ""; editing = null; if (id) refresh(true); else startForm(null); renderList(); }
+function renderList() {
+  $("#list").innerHTML = tests.map((t) => `<div class="co ${t.id === current && editing === null ? "on" : ""}" tabindex="0" onclick="select('${t.id}')" onkeydown="if(event.key==='Enter')select('${t.id}')">
+    <span>${esc(t.name)}</span><small>${busy(t.status) ? `<span class="dot"></span>${t.status === "running" ? t.completed + "/" + t.target : t.status}` : t.completed && t.tally?.rows?.[0] ? "#" + esc(t.tally.rows[0].id) : t.status}</small></div>`).join("") || `<p class="muted small">No tests yet.</p>`;
+}
+
+// ---------- brief form ----------
+function startForm(t) {
+  editing = t ? t.id : "new"; current = t ? t.id : null;
+  F = t ? {
+    name: t.name, brief: t.brief, vary: t.vary, agentsPerPersona: t.agentsPerPersona,
+    personas: t.personas.map((p) => ({ name: p.name, text: p.text })),
+    options: t.options.filter((o) => !o.region).map((o) => ({ id: o.id, name: o.name, text: o.text, files: o.files.map((f) => ({ keep: f.file, name: f.name || f.file })) })),
+    sheets: t.sheets.map((s) => ({ id: s.id, url: s.url || "", file: s.kind === "image" && s.files[0] ? { keep: s.files[0].file, name: s.files[0].name || s.files[0].file } : null, expected: s.expected || "" })),
+    rubricOn: t.rubric.on, rubricText: t.rubric.text || t.rubric.criteria.map((c) => `${c.label} ${c.weight}`).join("\n"),
+    target: t.target, concurrency: t.concurrency, model: t.model, effort: t.effort, mode: t.mode, hadRuns: t.completed,
+  } : { name: "", brief: "", vary: true, agentsPerPersona: 1, personas: [{ name: "", text: "" }], options: [{ text: "", files: [] }, { text: "", files: [] }], sheets: [],
+        rubricOn: false, rubricText: "", target: 50, concurrency: 2, model: "claude-opus-5-5", effort: "high", mode: "isolated" };
+  renderList(); renderForm();
+}
+const setF = (path, v) => { const k = path.split("."); let o = F; for (const p of k.slice(0, -1)) o = o[p]; o[k[k.length - 1]] = v; };
+function readFiles(list, cb) {
+  [...list].forEach((f) => { const r = new FileReader(); r.onload = () => cb({ name: f.name, data: r.result, size: f.size }); r.readAsDataURL(f); });
+}
+function addFiles(i, list) { readFiles(list, (f) => { F.options[i].files.push(f); renderForm(); }); }
+function sheetFile(i, list) { readFiles([list[0]], (f) => { F.sheets[i].file = f; F.sheets[i].url = ""; renderForm(); }); }
+function pasteMany() {
+  const chunks = $("#many").value.split(/^\s*---\s*$/m).map((s) => s.trim()).filter(Boolean);
+  const blank = F.options.filter((o) => !o.text.trim() && !o.files.length);
+  F.options = F.options.filter((o) => o.text.trim() || o.files.length).concat(chunks.map((text) => ({ text, files: [] })));
+  if (F.options.length < 2) F.options.push(...blank.slice(0, 2 - F.options.length));
+  renderForm();
+}
+const ids = () => { let n = 0; return () => { let s = "", k = n++; do { s = String.fromCharCode(65 + (k % 26)) + s; k = Math.floor(k / 26) - 1; } while (k >= 0); return s; }; };
+
+function renderForm() {
+  const L = ids();
+  const fileChip = (f, i, j) => `<span class="chip">${esc(f.name)}${f.size ? ` <span class="muted">${(f.size / 1024 / 1024).toFixed(1)} MB</span>` : ""}<button type="button" class="x" aria-label="Remove ${esc(f.name)}" onclick="F.options[${i}].files.splice(${j},1);renderForm()">×</button></span>`;
+  $("#main").innerHTML = `<div class="card">
+    <h2>${editing === "new" ? "New test" : "Edit test"}</h2>
+    ${F.hadRuns ? `<p class="warnbox small">This test has ${F.hadRuns} completed runs. Changing the brief, personas, options or rubric clears them. Settings like runs or model don't.</p>` : ""}
+    <div class="row"><label class="grow">Test name<input value="${esc(F.name)}" oninput="setF('name',this.value)" placeholder="e.g. Homepage hero options"></label></div>
+  </div>
+
+  <div class="card"><h3>01 · Brief</h3>
+    <p class="muted small">What is being tested, the situation, and the decision the agents make. They choose against this.</p>
+    <textarea rows="5" oninput="setF('brief',this.value)" placeholder="e.g. A medical billing company is sending a cold letter to independent practices. Judging only by the logo, which version would make you take the letter seriously?">${esc(F.brief)}</textarea>
+  </div>
+
+  <div class="card"><h3>02 · Personas</h3>
+    <p class="muted small">Up to 3. Describe who each person is in your own words. Every run sends each persona to its own fresh agent.</p>
+    ${F.personas.map((p, i) => `<div class="persona-edit" style="--c:${PC[i]}">
+      <div class="row"><label style="flex:0 0 220px">Name<input value="${esc(p.name)}" placeholder="Persona ${i + 1}" oninput="setF('personas.${i}.name',this.value)"></label>
+      ${F.personas.length > 1 ? `<button type="button" onclick="F.personas.splice(${i},1);renderForm()">Remove</button>` : ""}</div>
+      <label style="margin-top:10px">Persona brief<textarea rows="3" oninput="setF('personas.${i}.text',this.value)" placeholder="e.g. The office manager at an independent US medical practice. Runs vendors, billing and collections. Would recommend switching billing companies.">${esc(p.text)}</textarea></label>
+    </div>`).join("")}
+    <div class="row" style="margin-top:12px">
+      ${F.personas.length < 3 ? `<button type="button" onclick="F.personas.push({name:'',text:''});renderForm()">+ Add persona</button>` : ""}
+      <label>Agents per persona, per run<input type="number" min="1" max="5" value="${F.agentsPerPersona}" style="width:90px" oninput="setF('agentsPerPersona',this.value)"></label>
+      <label class="chk"><input type="checkbox" ${F.vary ? "checked" : ""} onchange="setF('vary',this.checked)"> Vary the individual each run</label>
+    </div>
+    <p class="muted small">Vary: each agent gets random traits (age band, place, time pressure, experience, mood). It becomes one specific person who fits your persona brief and says who it is.</p>
+  </div>
+
+  <div class="card"><h3>03 · Options</h3>
+    <p class="muted small">Anything goes in each option: type or paste text, paste one or more URLs (web pages are screenshotted), and attach any images, PDFs or text files. Agents only see neutral IDs and file names, never your names for them.</p>
+    ${F.options.map((o, i) => { const id = o.id || L(); return `<div class="opt-edit" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="event.preventDefault();this.classList.remove('over');addFiles(${i},event.dataTransfer.files)">
+      <div class="row" style="align-items:center"><span class="tag">${esc(o.id || "new")}</span>
+        <input value="${esc(o.name || "")}" placeholder="Name (only you see this)" oninput="setF('options.${i}.name',this.value)" style="flex:1;min-width:160px">
+        <button type="button" onclick="F.options.splice(${i},1);renderForm()">Remove</button></div>
+      <textarea rows="3" style="margin-top:10px" oninput="setF('options.${i}.text',this.value)" placeholder="Text, URLs, or both. Drop files here.">${esc(o.text)}</textarea>
+      <div class="row" style="margin-top:8px;align-items:center">${o.files.map((f, j) => fileChip(f, i, j)).join("")}
+        <label class="btnlike">Attach files<input type="file" multiple class="vh" onchange="addFiles(${i},this.files)"></label></div>
+    </div>`; }).join("")}
+    <div class="row" style="margin-top:12px"><button type="button" onclick="F.options.push({text:'',files:[]});renderForm()">+ Add option</button>
+      <button type="button" onclick="document.getElementById('manybox').hidden=!document.getElementById('manybox').hidden">Paste many</button></div>
+    <div id="manybox" hidden style="margin-top:12px"><label>Paste many options, separated by a line with <span class="mono">---</span><textarea id="many" rows="6" placeholder="https://site-a.com&#10;---&#10;https://site-b.com&#10;---&#10;Headline option three"></textarea></label>
+      <button type="button" style="margin-top:8px" onclick="pasteMany()">Add as options</button></div>
+
+    <h4>Sheets</h4>
+    <p class="muted small">One image or web page that contains many options side by side, like a logo sheet or a page of 12 designs. Prepare finds each option in it.</p>
+    ${F.sheets.map((s, i) => `<div class="opt-edit"><div class="row" style="align-items:flex-end">
+      <span class="tag">${esc(s.id || "new")}</span>
+      <label class="grow">Web page URL<input value="${esc(s.url)}" placeholder="https://…" oninput="setF('sheets.${i}.url',this.value)" ${s.file ? "disabled" : ""}></label>
+      <span class="muted small" style="padding-bottom:10px">or</span>
+      ${s.file ? `<span class="chip">${esc(s.file.name)}<button type="button" class="x" aria-label="Remove image" onclick="F.sheets[${i}].file=null;renderForm()">×</button></span>` : `<label class="btnlike">Upload image<input type="file" accept="image/*" class="vh" onchange="sheetFile(${i},this.files)"></label>`}
+      <label>Expected options<input type="number" min="2" value="${esc(s.expected)}" style="width:90px" oninput="setF('sheets.${i}.expected',this.value)"></label>
+      <button type="button" onclick="F.sheets.splice(${i},1);renderForm()">Remove</button></div></div>`).join("")}
+    <button type="button" onclick="F.sheets.push({url:'',file:null,expected:''});renderForm()">+ Import a sheet</button>
+  </div>
+
+  <div class="card"><h3>04 · Rubric (optional)</h3>
+    <label class="chk"><input type="checkbox" ${F.rubricOn ? "checked" : ""} onchange="setF('rubricOn',this.checked);renderForm()"> Add a neutral expert judge, blended 50/50 with the votes</label>
+    ${F.rubricOn ? `<label style="margin-top:10px">Criteria, one per line, with an optional weight<textarea rows="5" oninput="setF('rubricText',this.value)" placeholder="Trust 20&#10;Legibility 15&#10;Stands out 15">${esc(F.rubricText)}</textarea></label>` : ""}
+  </div>
+
+  <div class="card"><h3>05 · Run settings</h3><div class="row">
+    <label>Runs<input type="number" min="1" value="${F.target}" style="width:80px" oninput="setF('target',this.value)"></label>
+    <label>Runs in parallel<input type="number" min="1" max="6" value="${F.concurrency}" style="width:80px" oninput="setF('concurrency',this.value)"></label>
+    <label>Model<select onchange="setF('model',this.value)">${[["claude-opus-5-5", "Opus 5.5"], ["claude-fable-5-1", "Fable 5.1"], ["claude-opus-5", "Opus 5"], ["claude-sonnet-5", "Sonnet 5"]].map(([v, n]) => `<option value="${v}" ${F.model === v ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+    <label>Reasoning<select onchange="setF('effort',this.value)">${["high", "xhigh", "max", "medium", "low"].map((v) => `<option ${F.effort === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+    <label>Isolation<select onchange="setF('mode',this.value)"><option value="isolated" ${F.mode !== "combined" ? "selected" : ""}>Each agent in its own fresh call</option><option value="combined" ${F.mode === "combined" ? "selected" : ""}>All agents in one call per run</option></select></label>
+  </div></div>
+
+  <div class="row" style="margin-top:8px"><button type="button" class="primary" id="save" onclick="submitForm()">Save & prepare</button>
+    <button type="button" onclick="${editing === "new" ? (tests.length ? `select('${tests[tests.length - 1].id}')` : "startForm(null)") : `select('${editing}')`}">Cancel</button></div>
+  <div id="ferr" class="err"></div>`;
+}
+async function submitForm() {
+  const b = { ...F, options: F.options.map((o) => ({ id: o.id, name: o.name, text: o.text, files: o.files.map((f) => (f.keep ? { keep: f.keep } : { name: f.name, data: f.data })) })),
+    sheets: F.sheets.map((s) => ({ id: s.id, url: s.file ? "" : s.url, expected: s.expected, file: s.file?.data ? { name: s.file.name, data: s.file.data } : null })) };
+  $("#save").disabled = true; $("#save").textContent = "Saving…";
+  const r = editing === "new" ? await api("/api/tests", b) : await api(`/api/tests/${editing}/update`, b);
+  if (r.error) { $("#ferr").textContent = r.error; $("#save").disabled = false; $("#save").textContent = "Save & prepare"; return; }
+  editing = null; current = r.id; tab = "see"; lastHash = ""; refresh(true);
+}
+
+// ---------- test view ----------
+async function act(action, body) { await api(`/api/tests/${current}/${action}`, body || {}); if (action === "start") tab = "live"; refresh(true); }
+function del() { if (confirm("Delete this test, its files and all logs?")) api(`/api/tests/${current}/delete`, {}).then(() => { current = null; refreshList().then(() => startForm(null)); }); }
+function setTab(k) { tab = k; renderTest(cur); if (k === "see") loadPreview(); }
+
+function renderTest(t) {
+  const pct = Math.round((t.completed / t.target) * 100), b = busy(t.status);
+  if (!tab) tab = t.status === "running" ? "live" : t.completed ? "results" : "see";
+  const canStart = ["ready", "stopped", "done"].includes(t.status);
+  const btn = t.completed && t.completed < t.target ? "Resume" : t.completed ? "Re-run from scratch" : `Start ${t.target} runs`;
+  const calls = t.personas.length * t.agentsPerPersona + (t.rubric.on ? 1 : 0);
+  let h = `<div class="card"><div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div><h2>${esc(t.name)}</h2>
+      <span class="status ${t.status}">${b ? '<span class="dot"></span>' : ""}${t.status}</span>
+      <span class="muted small"> · ${esc(t.model)} · ${esc(t.effort)} reasoning · ${t.personas.length} persona${t.personas.length === 1 ? "" : "s"} × ${t.agentsPerPersona} agent${t.agentsPerPersona === 1 ? "" : "s"} · ${t.mode === "combined" ? "1 call per run" : `${calls} isolated calls per run`} · rubric ${t.rubric.on ? "on" : "off"} · $${t.cost.toFixed(2)} at list price${t.auth ? ` · ${t.auth === "none" ? "your Claude login" : `API key (${esc(t.auth)})`}` : ""}</span>
+      ${t.importedFrom ? `<div class="muted small">Imported from the ${t.importedFrom.startsWith("logo") ? "Logo verificator" : "Design tester"}</div>` : ""}</div>
+      <div class="row">${t.status === "running" ? `<button onclick="act('stop')">Stop</button>` : ""}
+        <button onclick="startForm(cur)" ${b ? "disabled" : ""}>Edit brief</button>
+        <button class="danger" onclick="del()" ${b ? "disabled" : ""}>Delete</button></div></div>
+    ${canStart ? `<div class="row" style="margin-top:14px">
+        <label>Runs<input id="t2" type="number" value="${t.target}" style="width:70px"></label>
+        <label>Parallel<input id="c2" type="number" value="${t.concurrency}" min="1" max="6" style="width:60px"></label>
+        <button class="primary" onclick="act('start',{target:$('#t2').value, concurrency:$('#c2').value, reset:${t.completed >= t.target}})">${btn}</button>
+        <span class="muted small" style="padding-bottom:10px">About $${(t.completed ? t.cost / Math.max(1, t.completed) : calls * 0.07).toFixed(2)} per run at list price</span></div>` : ""}
+    ${t.waitingUntil ? `<p class="warnbox small" style="margin-top:14px">Paused: your usage limit was reached. It continues on its own at ${time(t.waitingUntil)}, or you can stop it.</p>` : ""}
+    ${t.status !== "draft" && t.status !== "preparing" ? `<div style="margin-top:14px"><div class="row" style="justify-content:space-between"><span>${t.completed} / ${t.target} runs complete${t.inFlight ? ` · <span class="dot"></span>${t.inFlight} agents running now` : ""}${t.failedRuns ? ` · ${t.failedRuns} runs failed` : ""}</span><span>${pct}%</span></div><div class="bar" style="margin-top:6px"><i style="width:${pct}%"></i></div></div>` : ""}
+    ${t.error ? `<div class="err">${esc(t.error)}</div>` : ""}</div>`;
+  h += `<div class="tabs" role="tablist">${[["see", "What agents see"], ["live", "Live feed"], ["results", "Results"], ["last", "Last run explained"], ["how", "How it works"]]
+    .map(([k, n]) => `<button role="tab" aria-selected="${tab === k}" class="${tab === k ? "on" : ""}" onclick="setTab('${k}')">${n}</button>`).join("")}</div>`;
+  h += ({ see: seeTab, live: liveTab, results: resultsTab, last: lastTab, how: howTab })[tab](t);
+  $("#main").innerHTML = h;
+  if (tab === "see") loadPreview();
+}
+
+let previewFor = null;
+async function loadPreview() {
+  const el = $("#preview"); if (!el || !cur) return;
+  if (previewFor?.id === cur.id && previewFor.hash === lastHash) { el.innerHTML = previewFor.html; return; }
+  const p = await api(`/api/tests/${cur.id}/preview`);
+  const html = p.prompt ? `<h4>System prompt</h4><pre>${esc(p.systemPrompt)}</pre><h4>Prompt for a ${esc(cur.personas[0].name)} agent (sample: the order and traits change every call)</h4><pre>${esc(p.prompt)}</pre>${p.rubricPrompt ? `<h4>Rubric judge prompt (sample)</h4><pre>${esc(p.rubricPrompt)}</pre>` : ""}` : `<p class="muted">Add a persona and at least two options to see the prompt.</p>`;
+  previewFor = { id: cur.id, hash: lastHash, html };
+  if ($("#preview")) $("#preview").innerHTML = html;
+}
+
+function optionView(t, o) {
+  const s = o.region && t.sheets.find((x) => x.id === o.region.sheetId);
+  return `<div class="opt"><div><span class="tag">${esc(o.id)}</span><b>${esc(o.name)}</b></div>
+    ${o.bodyText ? `<div class="textopt">${esc(o.bodyText)}</div>` : ""}
+    ${o.files.length ? `<div class="thumbs">${o.files.map((f) => isImg(f.file) ? `<a href="${fileUrl(t, f.file)}" target="_blank"><img src="${fileUrl(t, f.file)}" alt="${esc(f.name || f.file)}"></a>` : `<a class="small" href="${fileUrl(t, f.file)}" target="_blank">${esc(f.file)}</a>`).join("")}</div><div class="muted small">Agents see: ${o.files.map((f) => esc(f.file)).join(", ")}</div>` : ""}
+    ${(o.shots || []).map((sh) => `<div class="small muted">Web page (${sh.files.length} screenshot${sh.files.length === 1 ? "" : "s"}): ${esc(sh.url)}</div><div class="thumbs">${sh.files.map((f) => `<a href="${fileUrl(t, f.file)}" target="_blank"><img src="${fileUrl(t, f.file)}" alt="Screenshot part ${f.part}"></a>`).join("")}</div>`).join("")}
+    ${(o.urls || []).filter((u) => !(o.shots || []).some((s) => s.url === u)).map((u) => `<div class="small muted">Web page not captured yet: ${esc(u)}</div>`).join("")}
+    ${o.region ? `<div class="small">In sheet ${esc(o.region.sheetId)}: ${esc(o.region.position)}${s?.files.length > 1 ? ` (part ${o.region.parts.join(", ")})` : ""}</div><div class="muted small">${esc(o.region.description)}</div>` : ""}</div>`;
+}
+
+function seeTab(t) {
+  let h = `<div class="card"><h3>Brief</h3><div class="textopt">${esc(t.brief) || '<span class="muted">No brief yet.</span>'}</div></div>
+    <div class="card"><h3>Personas</h3><div class="grid3">${t.personas.map((p, i) => `<div class="person" style="--c:${PC[i]}"><b style="color:${PC[i]}">${esc(p.name)}</b><p class="small">${esc(p.text)}</p></div>`).join("")}</div>
+      <p class="muted small">${t.agentsPerPersona} fresh agent${t.agentsPerPersona === 1 ? "" : "s"} per persona per run. ${t.vary ? "Each agent gets random traits (age band, place, time pressure, experience, mood) and becomes one specific person who fits the brief." : "Every agent plays the persona as written."}</p></div>`;
+  if (t.rubric.on) h += `<div class="card"><h3>Rubric</h3>${t.rubric.criteria.map((c) => `<div class="item">${esc(c.label)} <span class="muted">(${c.weight})</span></div>`).join("")}</div>`;
+  if (t.sheets.length) h += `<div class="card"><h3>Sheets</h3>${t.sheets.map((s) => `<div class="item"><div class="row" style="justify-content:space-between;align-items:center"><span><span class="tag">${esc(s.id)}</span>${s.url ? esc(s.url) : "Uploaded image"} · ${s.detected ? `${t.options.filter((o) => o.region?.sheetId === s.id).length} options found` : "not detected yet"}</span>
+      ${!busy(t.status) ? `<button onclick="act('prepare',{redetect:true})">Re-detect</button>` : ""}</div>
+      <div class="thumbs big">${s.files.map((f) => `<a href="${fileUrl(t, f.file)}" target="_blank"><img src="${fileUrl(t, f.file)}" alt="${esc(f.file)}"></a>`).join("")}</div></div>`).join("")}</div>`;
+  h += `<div class="card"><h3>Options (${t.options.length})</h3><p class="muted small">Agents get only the ID and the content. Your names and the sheet descriptions are just for you, and uploaded files are renamed so their names can't bias anyone.</p><div class="grid3">${t.options.map((o) => optionView(t, o)).join("") || '<p class="muted">No options yet.</p>'}</div></div>`;
+  h += `<div class="card"><h3>Exact prompt</h3><div id="preview"><p class="muted small">Loading…</p></div></div>`;
+  if (t.prepareLog?.length) h += `<div class="card"><h3>Prepare log</h3>${t.prepareLog.map((l) => `<div class="small"><span class="muted mono">${time(l.at)}</span> ${esc(l.text)}</div>`).join("")}</div>`;
+  return h;
+}
+
+function liveTab(t) {
+  if (!t.calls.length) return `<div class="card muted">No calls yet.</div>`;
+  return `<div class="card"><h3>Every Claude call, newest first</h3><p class="muted small">Each row is a separate <span class="mono">claude</span> process with its own session. Click a row to see the exact prompt, command, event timeline and raw answer.</p>
+    <div style="overflow-x:auto"><table><thead><tr><th>Run</th><th>Who</th><th>Status</th><th>Session</th><th>PID</th><th>Thinking</th><th>Time</th><th>Pick</th><th>Latest event</th></tr></thead><tbody>
+    ${t.calls.map((x) => `<tr class="click" tabindex="0" onclick="showCall('${x.id}')" onkeydown="if(event.key==='Enter')showCall('${x.id}')">
+      <td class="num">${x.run || "—"}${x.attempt > 1 ? ` <span class="muted small">retry ${x.attempt - 1}</span>` : ""}</td>
+      <td><b style="color:${x.role === "persona" ? pColor(t, x.personaId) : "inherit"}">${esc(roleName(t, x))}</b><div class="muted small">${esc((x.individual || "").slice(0, 90))}</div></td>
+      <td><span class="status ${x.status}">${x.status === "running" ? '<span class="dot"></span>' : ""}${x.status}</span></td>
+      <td class="mono">${short(x.sessionId)}</td><td class="mono">${x.pid || ""}</td>
+      <td class="num">${x.thinkingTokens ? "~" + x.thinkingTokens + " tok" : ""}</td><td class="num">${secs(x)}</td>
+      <td>${x.pick ? `<span class="tag">${esc(x.pick)}</span>${x.runnerUp ? `<span class="muted small">2nd ${esc(x.runnerUp)}</span>` : ""}` : ""}</td>
+      <td class="small muted">${esc((x.lastEvent || "").slice(0, 90))}</td></tr>`).join("")}
+    </tbody></table></div></div>`;
+}
+
+function resultsTab(t) {
+  const T = t.tally;
+  if (!T || !t.completed) return `<div class="card muted">No completed runs yet.</div>`;
+  const w = T.rows[0], wo = t.options.find((o) => o.id === w.id), fav = T.rows.find((r) => r.id === T.favorite);
+  const multi = t.personas.length > 1;
+  let h = `<div class="card winner"><div class="big">#${esc(w.id)}</div><div><h3>${t.status === "done" ? "Winner" : "Current leader"}: ${esc(wo?.name || w.id)}</h3>
+    ${wo?.region ? `<div class="muted">${esc(wo.region.description)}</div>` : wo?.bodyText ? `<div class="muted">${esc(wo.bodyText.slice(0, 200))}</div>` : ""}
+    <div style="margin-top:6px">${w.votes} of ${T.votes} votes (${w.voteShare.toFixed(0)}%)${T.hasRubric ? ` · rubric ${w.rubricScore.toFixed(1)}/100 · final ${w.final.toFixed(1)}` : ""}</div>
+    ${T.hasRubric && fav && fav.id !== w.id ? `<div class="small" style="margin-top:4px">On votes alone the favourite is <b>${esc(fav.name || fav.id)}</b> (${fav.votes} votes). The rubric moved ${esc(w.id)} ahead.</div>` : ""}</div></div>`;
+  h += `<div class="card"><h3>Results after ${T.runs} runs · ${T.votes} votes</h3>
+    ${multi ? `<div class="legend" style="margin-bottom:8px">${t.personas.map((p, i) => `<span><i style="background:${PC[i]}"></i>${esc(p.name)}</span>`).join("")}</div>` : ""}
+    <div style="overflow-x:auto"><table><thead><tr><th>Option</th><th>Votes</th><th></th>${multi ? t.personas.map((p) => `<th>${esc(p.name)}</th>`).join("") : ""}<th>Runner-up</th><th>Vote %</th>${T.hasRubric ? "<th>Rubric /100</th><th>Final</th>" : ""}</tr></thead><tbody>
+    ${T.rows.map((r) => `<tr><td><span class="tag">${esc(r.id)}</span>${r.name && r.name !== `Option ${r.id}` ? `<span class="small muted">${esc(r.name)}</span>` : ""}</td><td class="num">${r.votes}</td>
+      <td style="width:26%"><div class="stack">${t.personas.map((p, i) => `<i style="background:${PC[i]};width:${(r.byPersona[p.id] / Math.max(1, T.votes)) * 100}%"></i>`).join("")}</div></td>
+      ${multi ? t.personas.map((p) => `<td class="num">${r.byPersona[p.id] || 0}</td>`).join("") : ""}
+      <td class="num">${r.runnerUp}</td><td class="num">${r.voteShare.toFixed(0)}%</td>
+      ${T.hasRubric ? `<td class="num">${r.rubricScore.toFixed(1)} <span class="muted small">±${r.rubricSd.toFixed(1)}</span></td><td class="num"><b>${r.final.toFixed(1)}</b></td>` : ""}</tr>`).join("")}
+    </tbody></table></div>
+    <p class="muted small">${T.hasRubric ? "Final = 50% vote share + 50% weighted rubric. ± is how much the rubric score moved between runs. " : "Final = vote share. "}${T.votes / T.runs > 1 ? `In ${Math.round((T.unanimous / T.runs) * 100)}% of runs every agent picked the same option.` : ""}</p></div>`;
+  h += `<div class="card"><h3>How settled each persona is</h3>${T.personas.map((p, i) => `<div class="item"><b style="color:${PC[i]}">${esc(p.name)}</b> · ${p.votes} votes · favourite <span class="tag">${esc(p.favorite || "—")}</span> in ${Math.round(p.consistency)}% of them
+      <div class="hbar"><i style="width:${p.consistency}%;background:${PC[i]}"></i></div></div>`).join("")}
+    <p class="muted small">Close to 100% means that persona gives the same answer almost every time. Lower means opinion is split.</p></div>`;
+  if (T.hasRubric) h += `<div class="card"><h3>Rubric averages (1–10)</h3><div style="overflow-x:auto"><table><thead><tr><th>Option</th>${T.criteria.map((c) => `<th>${esc(c.label)} <span class="muted">(${c.weight})</span></th>`).join("")}</tr></thead><tbody>
+    ${T.rows.map((r) => `<tr><td><span class="tag">${esc(r.id)}</span></td>${T.criteria.map((c) => `<td class="num">${r.avg[c.key].toFixed(1)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`;
+  const quotes = t.runs.flatMap((r) => r.picks.filter((p) => p.pick === w.id).map((p) => ({ ...p, n: r.n }))).slice(-6);
+  if (quotes.length) h += `<div class="card"><h3>Why agents chose ${esc(w.id)}</h3>${quotes.map((q) => `<div class="quote">“${esc(q.reason)}”<div class="muted small"><b style="color:${pColor(t, q.personaId)}">${esc(pName(t, q.personaId))}</b> · run ${q.n}${q.individual ? ` · ${esc(q.individual)}` : ""}</div></div>`).join("")}</div>`;
+  return h;
+}
+
+function lastTab(t) {
+  const run = t.runs[t.runs.length - 1];
+  if (!run) return `<div class="card muted">No completed run yet.</div>`;
+  const call = (id) => t.calls.find((x) => x.id === id);
+  const n = run.picks.length + (run.rubric.length ? 1 : 0);
+  let h = `<div class="card"><h3>Run #${run.n} · finished ${time(run.at)}</h3>
+    <p>${t.mode !== "combined" ? `This run was <b>${n} separate Claude processes</b> started at the same time: ${run.picks.length} agent${run.picks.length === 1 ? "" : "s"}${run.rubric.length ? " and one neutral rubric judge" : ""}. Each started a brand-new session and saw only its own prompt and the files. None could see the others or any earlier run.`
+      : `This run was <b>one Claude process</b> answering as all ${run.picks.length} agents${run.rubric.length ? " and then the judge" : ""}. They share that one context, but nothing carries over from earlier runs.`}
+    Every call listed the options in a new random order.</p></div><div class="grid3">`;
+  for (const p of run.picks) {
+    const x = call(p.callId), i = pIndex(t, p.personaId);
+    h += `<div class="person" style="--c:${PC[i]}"><b style="color:${PC[i]}">${esc(pName(t, p.personaId))}${t.agentsPerPersona > 1 ? ` #${p.slot}` : ""}</b>
+      ${p.individual ? `<p class="small">${esc(p.individual)}</p>` : ""}
+      <div>Chose <span class="tag">${esc(p.pick)}</span> · runner-up <span class="tag">${esc(p.runner_up)}</span></div>
+      <div class="quote">“${esc(p.reason)}”</div>
+      ${x ? `<div class="small muted">Session <span class="mono">${short(x.sessionId)}</span> · pid ${x.pid} · ~${x.thinkingTokens || 0} thinking tokens · ${secs(x)} · $${(x.cost || 0).toFixed(3)}</div>
+      <button style="margin-top:8px" onclick="showCall('${x.id}')">See the full call →</button>` : ""}</div>`;
+  }
+  h += `</div>`;
+  if (run.rubric.length) {
+    const T = t.tally, rc = t.calls.find((x) => run.callIds.includes(x.id) && (x.role === "rubric" || x.role === "combined"));
+    h += `<div class="card" style="margin-top:16px"><h3>Rubric scores in this run</h3><div style="overflow-x:auto"><table><thead><tr><th>Option</th>${T.criteria.map((c) => `<th>${esc(c.label)}</th>`).join("")}<th>Note</th></tr></thead><tbody>
+      ${[...run.rubric].sort((a, b) => String(a.id).localeCompare(String(b.id), undefined, { numeric: true })).map((s) => `<tr><td><span class="tag">${esc(s.id)}</span></td>${T.criteria.map((c) => `<td class="num">${s[c.key] ?? ""}</td>`).join("")}<td class="small">${esc(s.note || "")}</td></tr>`).join("")}
+      </tbody></table></div>${rc ? `<button style="margin-top:10px" onclick="showCall('${rc.id}')">See the full rubric call →</button>` : ""}</div>`;
+  }
+  return h;
+}
+
+function howTab(t) {
+  const iso = t.tally?.isolation || { calls: 0, uniqueSessions: 0, uniquePids: 0 };
+  return `<div class="card"><h3>Is each context really wiped?</h3><div class="stats">
+      <div><div class="stat">${iso.calls}</div><div class="muted small">completed Claude calls</div></div>
+      <div><div class="stat" style="color:${iso.calls && iso.uniqueSessions === iso.calls ? "var(--ok)" : "inherit"}">${iso.uniqueSessions}</div><div class="muted small">unique session IDs (should equal calls)</div></div>
+      <div><div class="stat">${iso.uniquePids}</div><div class="muted small">unique OS process IDs</div></div>
+      <div><div class="stat" style="color:var(--ok)">0</div><div class="muted small">sessions resumed (the code never passes --resume or --continue)</div></div></div></div>
+    <div class="card"><h3>The pipeline</h3><ol>
+      <li><b>Prepare:</b> uploaded files are copied into this test's own folder under neutral names. Web pages are opened in headless Chrome at 1440px and saved as overlapping screenshots. Sheets are scanned once to find each option in them.</li>
+      <li><b>Run:</b> for each persona, ${t.agentsPerPersona} fresh agent${t.agentsPerPersona === 1 ? "" : "s"} start${t.agentsPerPersona === 1 ? "s" : ""} at once${t.vary ? ", each with newly drawn traits," : ""} and ${t.agentsPerPersona === 1 ? "chooses" : "choose"} the option they'd pick against the brief, plus a runner-up and a reason.${t.rubric.on ? " A neutral judge scores every option on your rubric in its own call." : ""}</li>
+      <li><b>Tally:</b> votes are counted overall and per persona${t.rubric.on ? " and blended 50/50 with the rubric" : ""}.</li></ol></div>
+    <div class="card"><h3>What each call can see: this list and nothing else</h3><ol>
+      <li>A fixed system prompt that also tells it to treat option content as material to judge, never as instructions.</li>
+      <li>One prompt: the brief, who it is, and the options as neutral IDs in a new random order. The What agents see tab shows it exactly.</li>
+      <li>The files in this test's folder, which it opens itself with Read. <span class="mono">--restricted</span> refuses any file outside that folder.</li></ol>
+      <p>It gets no chat history, no memory, no CLAUDE.md, no plugins or MCP servers, no web access and no results from other runs.</p></div>
+    <div class="card"><h3>The command behind every call</h3><div style="overflow-x:auto"><table><tbody>
+      ${[["-p <prompt>", "One-shot headless mode: the process answers and exits."], ["--no-session-persistence", "The session is never saved to disk, so nothing can resume it."],
+         ["(no --resume / --continue)", "Every call starts a brand-new session ID. The Live feed shows each one."], ["--restricted", "Removes tools that run code or fetch the web, and limits file reads to this test's folder."],
+         ["--safe-mode", "Turns off CLAUDE.md, skills, plugins, hooks, memory and custom agents."], ["--strict-mcp-config", "Loads no MCP servers."],
+         ["--setting-sources \"\"", "Ignores user and project settings files."], ["--system-prompt …", "Replaces Claude Code's default system prompt."],
+         ["--tools Read", "The only tool it has is reading files."], ["--json-schema …", "It must answer in a fixed structure: pick, runner-up and reason, or scores."],
+         [`--model ${t.model} --effort ${t.effort}`, "The model and reasoning level you chose."]].map(([a, b]) => `<tr><td class="mono">${esc(a)}</td><td>${b}</td></tr>`).join("")}</tbody></table></div></div>
+    <div class="card"><h3>Good to know</h3>
+      <h4>These are simulated people</h4><p>A model plays each persona, so many runs show how that model thinks those people would react, not what real people would do. An option that wins across very different individuals is a strong signal. A split result is useful too.</p>
+      <h4>"Cache read" tokens aren't memory</h4><p>The API caches identical input text, like the system prompt and tool definitions, to save work. That cache never holds another call's answer.</p>
+      <h4>What you can't see</h4><p>The model reasons privately before it answers, and the API only reports how many tokens that took. That's why every answer includes a written reason and a runner-up.</p>
+      <h4>Cost</h4><p>Costs are list-price estimates. With a Claude subscription, runs count toward your plan's usage limits instead. If you hit a limit, the test pauses and continues when the limit resets.</p></div>`;
+}
+
+// ---------- call drawer ----------
+async function showCall(id, silent) {
+  openCall = id;
+  const x = await api(`/api/tests/${current}/calls/${id}`);
+  const scroll = $("#modal > .modal > div")?.scrollTop || 0;
+  const who = x.output?.individual || x.individualText;
+  $("#modal").innerHTML = `<div class="modal" onclick="if(event.target===this)closeCall()"><div role="dialog" aria-modal="true" aria-label="Call details">
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(roleName(cur, x))} · run ${x.run || "—"}</h2><button onclick="closeCall()">Close</button></div>
+    <p><span class="status ${x.status}">${x.status === "running" ? '<span class="dot"></span>' : ""}${x.status}</span>${x.attempt > 1 ? ` <span class="muted small">retry ${x.attempt - 1}</span>` : ""}</p>
+    <div class="kv">
+      <div>Session ID</div><div class="mono">${esc(x.sessionId || "—")}</div>
+      <div>OS process ID</div><div class="mono">${x.pid || "—"}</div>
+      ${x.apiKeySource ? `<div>Auth</div><div>${x.apiKeySource === "none" ? "Your Claude login" : esc(x.apiKeySource)}</div>` : ""}
+      <div>Started / ended</div><div>${time(x.startedAt)} → ${time(x.endedAt) || "running"} (${secs(x)})</div>
+      ${x.order ? `<div>Option order shown</div><div>${x.order.map((i) => `<span class="tag">${esc(i)}</span>`).join("")}</div>` : ""}
+      ${x.filesOpened != null ? `<div>Files opened</div><div>${x.filesOpened}</div>` : ""}
+      <div>Thinking</div><div>~${x.thinkingTokens || 0} tokens (text not exposed by the API)</div>
+      ${x.usage ? `<div>Tokens</div><div>input ${x.usage.input} · cache read ${x.usage.cacheRead} · cache write ${x.usage.cacheWrite} · output ${x.usage.output}${x.usage.thinking != null ? ` (thinking ${x.usage.thinking})` : ""}</div>` : ""}
+      <div>Cost</div><div>$${(x.cost || 0).toFixed(4)} at list price</div></div>
+    ${x.traits ? `<h4>Traits drawn for this agent</h4><div class="quote">age ${esc(x.traits.age)}; lives in ${esc(x.traits.place)}; ${esc(x.traits.time)}; ${esc(x.traits.experience)}; mood: ${esc(x.traits.mood)}</div>` : ""}
+    ${who ? `<h4>Who it was</h4><div class="quote">${esc(who)}</div>` : ""}
+    ${x.agentsText ? `<h4>Agents in this call</h4>${x.agentsText.map((a) => `<div class="quote">${esc(a)}</div>`).join("")}` : ""}
+    <h4>Event timeline (live)</h4>${x.events.map((e) => `<div class="ev"><span class="mono muted">+${(e.t / 1000).toFixed(1)}s</span><b>${esc(e.kind)}</b><span>${esc(e.text)}</span></div>`).join("")}
+    ${x.output ? `<h4>Answer returned (raw)</h4><pre>${esc(JSON.stringify(x.output, null, 2))}</pre>` : ""}
+    ${x.error ? `<h4>Error</h4><pre>${esc(x.error)}</pre>` : ""}
+    <h4>System prompt</h4><pre>${esc(x.systemPrompt)}</pre>
+    <h4>Exact prompt sent</h4><pre>${esc(x.prompt)}</pre>
+    <h4>Exact command</h4><pre>${esc((x.argv || []).map((a) => (/[\s"{]/.test(a) ? JSON.stringify(a) : a)).join(" "))}</pre></div></div>`;
+  if (silent) $("#modal > .modal > div").scrollTop = scroll;
+}
+function closeCall() { openCall = null; $("#modal").innerHTML = ""; }
+document.addEventListener("keydown", (e) => e.key === "Escape" && closeCall());
+
+refreshList().then(() => { if (!tests.length) startForm(null); else select(tests[tests.length - 1].id); });
+setInterval(() => {
+  if (editing !== null) return;
+  if (current && busy(tests.find((x) => x.id === current)?.status)) refresh();
+  else if (tests.some((x) => busy(x.status))) refreshList();
+}, 1500);
+</script>
+<script>
+// Theme dial, as on noorandmachine.com: 0 = dark, 1 = bright, every token blends linearly. Extension tokens blend too.
+(() => {
+  const dark   = { bg: "#0a0a0a", fg: "#f5f3ee", accent: "#e8c46a", muted: "#8a8578", ok: "#8cc9a0", warn: "#e0955a", err: "#ef8373", s1: "#86b4e0", s2: "#7cc4b2", s3: "#c4a0e0", glow: 0.08 };
+  const bright = { bg: "#f6f6f8", fg: "#0e0e12", accent: "#ff2e5b", muted: "#6f6d78", ok: "#16804f", warn: "#a85600", err: "#c62839", s1: "#2f64c8", s2: "#0e7c6d", s3: "#8741b8", glow: 0.16 };
+  const root = document.documentElement, dial = document.getElementById("dial"), meta = document.querySelector('meta[name="theme-color"]');
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mix = (a, b, t) => { const A = hex(a), B = hex(b); return "rgb(" + A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(",") + ")"; };
+  let t = 0, raf = 0;
+  const apply = (v) => {
+    t = Math.max(0, Math.min(1, v));
+    for (const k of ["bg", "fg", "accent", "muted", "ok", "warn", "err", "s1", "s2", "s3"]) root.style.setProperty("--" + k, mix(dark[k], bright[k], t));
+    const g = hex(bright.accent), d = hex(dark.accent);
+    root.style.setProperty("--glow", "rgba(" + d.map((v, i) => Math.round(v + (g[i] - v) * t)).join(",") + "," + (dark.glow + (bright.glow - dark.glow) * t).toFixed(3) + ")");
+    root.style.setProperty("--t", t);
+    dial.setAttribute("aria-valuenow", Math.round(t * 100));
+    if (meta) meta.content = mix(dark.bg, bright.bg, t);
+    try { localStorage.setItem("nm-theme", t); } catch (e) {}
+  };
+  const glide = (to) => {
+    cancelAnimationFrame(raf);
+    const from = t, start = performance.now();
+    const step = (now) => { const k = Math.min(1, (now - start) / 380), e = 1 - Math.pow(1 - k, 3); apply(from + (to - from) * e); if (k < 1) raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step);
+  };
+  const fromX = (x) => { const r = dial.getBoundingClientRect(); return (x - r.left - 12) / (r.width - 24); };
+  let down = null;
+  dial.addEventListener("pointerdown", (e) => { cancelAnimationFrame(raf); down = { x: e.clientX, moved: false }; dial.setPointerCapture(e.pointerId); });
+  dial.addEventListener("pointermove", (e) => { if (!down) return; if (Math.abs(e.clientX - down.x) > 3) down.moved = true; if (down.moved) apply(fromX(e.clientX)); });
+  dial.addEventListener("pointerup", () => { if (!down) return; if (!down.moved) glide(t < 0.5 ? 1 : 0); else glide(t < 0.5 ? 0 : 1); down = null; });
+  dial.addEventListener("pointercancel", () => { down = null; });
+  dial.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowUp") glide(Math.min(1, t + 0.1));
+    else if (e.key === "ArrowLeft" || e.key === "ArrowDown") glide(Math.max(0, t - 0.1));
+    else if (e.key === "Home") glide(0); else if (e.key === "End") glide(1);
+    else if (e.key === " " || e.key === "Enter") glide(t < 0.5 ? 1 : 0); else return;
+    e.preventDefault();
+  });
+  let saved = 0; try { saved = parseFloat(localStorage.getItem("nm-theme")) || 0; } catch (e) {}
+  apply(saved);
+})();
+</script>
+</body>
+</html>
