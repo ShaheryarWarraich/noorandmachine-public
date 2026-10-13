@@ -1,0 +1,26 @@
+{
+  "name": "anyas-french-greetings",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 5183",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "audio": "node scripts/gen-audio.mjs",
+    "icons": "node scripts/gen-icons.mjs",
+    "test:sim": "node test/content.mjs && node test/check.mjs && node test/questions.mjs && node test/scoring.mjs && node test/storage.mjs",
+    "clips": "node scripts/make-clips.mjs",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "fake-indexeddb": "^6.0.0",
+    "vite": "^5.4.11",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}

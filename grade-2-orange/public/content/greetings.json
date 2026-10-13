@@ -1,0 +1,665 @@
+{
+  "learner": {
+    "grade": 2
+  },
+  "goal": "Quiz next week on 11 French greetings: correct spelling, correct pronunciation, and the meaning of each one.",
+  "words": [
+    {
+      "id": "a_lundi",
+      "fr": "À lundi",
+      "en": "See you Monday",
+      "when": "Saying bye on Friday.",
+      "say": "ah lun-dee",
+      "pic": "monday",
+      "tip": "The big À keeps its hat.",
+      "highlight": [
+        0
+      ],
+      "tiles": "lundi",
+      "lookalikes": [
+        "A lundi",
+        "À lundie",
+        "À lundy"
+      ]
+    },
+    {
+      "id": "allo",
+      "fr": "Allô",
+      "en": "Hello (on the phone)",
+      "when": "Picking up the phone.",
+      "say": "ah-lo",
+      "pic": "phone",
+      "tip": "Two l's, and a hat on the ô.",
+      "highlight": [
+        1,
+        2,
+        3
+      ],
+      "tiles": "Allô",
+      "lookalikes": [
+        "Alo",
+        "Allo",
+        "Alô"
+      ]
+    },
+    {
+      "id": "au_revoir",
+      "fr": "Au revoir",
+      "en": "Goodbye",
+      "when": "Leaving someone.",
+      "say": "oh ruh-vwar",
+      "pic": "wave",
+      "tip": "Au says 'oh'. Two words.",
+      "highlight": [
+        0,
+        1
+      ],
+      "tiles": "revoir",
+      "lookalikes": [
+        "Aurevoir",
+        "Au revoire",
+        "O revoir"
+      ]
+    },
+    {
+      "id": "a_bientot",
+      "fr": "À bientôt",
+      "en": "See you soon",
+      "when": "Saying bye, but not for long.",
+      "say": "ah byan-toh",
+      "pic": "soon",
+      "tip": "Two hats: À and ô. The last t is silent.",
+      "highlight": [
+        0,
+        7,
+        8
+      ],
+      "tiles": "bientôt",
+      "lookalikes": [
+        "A bientot",
+        "À bientot",
+        "À biento"
+      ],
+      "wrongSay": {
+        "text": "À bientote",
+        "why": "The last t is silent."
+      }
+    },
+    {
+      "id": "merci_beaucoup",
+      "fr": "Merci beaucoup",
+      "en": "Thank you very much",
+      "when": "Someone gives you something.",
+      "say": "mair-see bo-koo",
+      "pic": "gift",
+      "tip": "c says 's'. eau says 'oh'. The p is silent.",
+      "highlight": [
+        3,
+        7,
+        8,
+        9,
+        13
+      ],
+      "tiles": "beaucoup",
+      "lookalikes": [
+        "Merci beacoup",
+        "Mersi beaucoup",
+        "Merci bocoup"
+      ],
+      "wrongSay": {
+        "text": "Merci beaucoupe",
+        "why": "The p is silent."
+      }
+    },
+    {
+      "id": "de_rien",
+      "fr": "De rien",
+      "en": "You're welcome",
+      "when": "After someone says merci.",
+      "say": "duh ree-an",
+      "pic": "welcome",
+      "tip": "Two little words. 'ien' says 'yan'.",
+      "highlight": [
+        4,
+        5,
+        6
+      ],
+      "tiles": "rien",
+      "lookalikes": [
+        "De rein",
+        "Derien",
+        "De rienne"
+      ],
+      "wrongSay": {
+        "text": "De rienne",
+        "why": "'ien' is a nose sound. Do not say the n hard."
+      }
+    },
+    {
+      "id": "desole",
+      "fr": "Désolé(e)",
+      "en": "Sorry",
+      "when": "You bump into someone.",
+      "say": "day-zo-lay",
+      "pic": "oops",
+      "tip": "Two é's. A girl adds one more e at the end: Désolée.",
+      "highlight": [
+        1,
+        5,
+        7
+      ],
+      "tiles": "Désolée",
+      "accept": [
+        "Désolé",
+        "Désolée",
+        "Désolé(e)"
+      ],
+      "lookalikes": [
+        "Desolé",
+        "Désole",
+        "Dèsolé"
+      ],
+      "wrongSay": {
+        "text": "Dézol",
+        "why": "é says 'ay'. Say day-zo-lay."
+      }
+    },
+    {
+      "id": "sil_vous_plait",
+      "fr": "S'il vous plaît",
+      "en": "Please",
+      "when": "Asking for something.",
+      "say": "seel voo play",
+      "pic": "please",
+      "tip": "A tiny ' after the S. A hat on the î. The t is silent.",
+      "highlight": [
+        1,
+        13,
+        14
+      ],
+      "tiles": "plaît",
+      "lookalikes": [
+        "S'il vous plait",
+        "Sil vous plaît",
+        "S'il vou plaît"
+      ],
+      "wrongSay": {
+        "text": "S'il vous plaite",
+        "why": "The t at the end is silent."
+      }
+    },
+    {
+      "id": "bonne_chance",
+      "fr": "Bonne chance",
+      "en": "Good luck",
+      "when": "Before a test or a race.",
+      "say": "bun shahnss",
+      "pic": "clover",
+      "tip": "Bonne has two n's and an e. ch says 'sh'.",
+      "highlight": [
+        2,
+        3,
+        4,
+        6,
+        7
+      ],
+      "tiles": "chance",
+      "lookalikes": [
+        "Bon chance",
+        "Bonne chanse",
+        "Bone chance"
+      ],
+      "wrongSay": {
+        "text": "Bon chance",
+        "why": "Say bonne, with the n sound."
+      }
+    },
+    {
+      "id": "bon_weekend",
+      "fr": "Bon week-end",
+      "en": "Have a good weekend",
+      "when": "Saying bye on Friday.",
+      "say": "bon week-end",
+      "pic": "weekend",
+      "tip": "Bon has no e. A small line joins week and end.",
+      "highlight": [
+        1,
+        2,
+        8
+      ],
+      "tiles": "week-end",
+      "lookalikes": [
+        "Bonne week-end",
+        "Bon weekend",
+        "Bon week end"
+      ],
+      "wrongSay": {
+        "text": "Bonne week-end",
+        "why": "Say bon, through the nose."
+      }
+    },
+    {
+      "id": "felicitations",
+      "fr": "Félicitations",
+      "en": "Congratulations",
+      "when": "Someone wins or does well.",
+      "say": "fay-lee-see-tah-syon",
+      "pic": "trophy",
+      "tip": "é at the start. Both c's say 's'. The s at the end is silent.",
+      "highlight": [
+        1,
+        4,
+        12
+      ],
+      "tiles": "Félicitations",
+      "lookalikes": [
+        "Felicitations",
+        "Félisitations",
+        "Félicitation"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "hats",
+      "title": "Hats",
+      "text": "Some letters wear a hat: À, ô, î. Keep the hat on.",
+      "words": [
+        "a_bientot",
+        "allo",
+        "sil_vous_plait"
+      ],
+      "highlights": {
+        "a_bientot": [
+          0,
+          7
+        ],
+        "allo": [
+          3
+        ],
+        "sil_vous_plait": [
+          13
+        ]
+      }
+    },
+    {
+      "id": "big_a",
+      "title": "Big À keeps its hat",
+      "text": "Even a capital À wears its hat.",
+      "words": [
+        "a_lundi",
+        "a_bientot"
+      ],
+      "highlights": {
+        "a_lundi": [
+          0
+        ],
+        "a_bientot": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "up_mark",
+      "title": "é says 'ay'",
+      "text": "The little up mark makes e say 'ay'.",
+      "words": [
+        "desole",
+        "felicitations"
+      ],
+      "highlights": {
+        "desole": [
+          1,
+          5
+        ],
+        "felicitations": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "silent",
+      "title": "Silent enders",
+      "text": "You write the last letter but you do not say it.",
+      "words": [
+        "merci_beaucoup",
+        "sil_vous_plait",
+        "a_bientot",
+        "felicitations"
+      ],
+      "highlights": {
+        "merci_beaucoup": [
+          13
+        ],
+        "sil_vous_plait": [
+          14
+        ],
+        "a_bientot": [
+          8
+        ],
+        "felicitations": [
+          12
+        ]
+      }
+    },
+    {
+      "id": "c_says_s",
+      "title": "c can say 's'",
+      "text": "Before e or i, c says 's'.",
+      "words": [
+        "merci_beaucoup",
+        "felicitations"
+      ],
+      "highlights": {
+        "merci_beaucoup": [
+          3
+        ],
+        "felicitations": [
+          4,
+          6
+        ]
+      }
+    },
+    {
+      "id": "tiny_marks",
+      "title": "Tiny marks",
+      "text": "A ' in S'il. A - in week-end. They count!",
+      "words": [
+        "sil_vous_plait",
+        "bon_weekend"
+      ],
+      "highlights": {
+        "sil_vous_plait": [
+          1
+        ],
+        "bon_weekend": [
+          8
+        ]
+      }
+    },
+    {
+      "id": "bon_bonne",
+      "title": "Bon or Bonne?",
+      "text": "Bon goes with week-end. Bonne goes with chance.",
+      "words": [
+        "bon_weekend",
+        "bonne_chance"
+      ],
+      "highlights": {
+        "bon_weekend": [
+          0,
+          1,
+          2
+        ],
+        "bonne_chance": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "id": "girl_boy",
+      "title": "Girl or boy?",
+      "text": "A boy writes Désolé. A girl writes Désolée.",
+      "words": [
+        "desole"
+      ],
+      "highlights": {
+        "desole": [
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "id": "say_it",
+      "title": "Say it well",
+      "text": "Listen. Say it slowly. Say it three times. Then say it fast.",
+      "words": []
+    }
+  ],
+  "lessons": [
+    {
+      "id": "allo",
+      "title": "Allô? Hello on the phone",
+      "file": "video/allo.mp4",
+      "words": [
+        "allo",
+        "au_revoir"
+      ],
+      "source": {
+        "youtube": "lwmrMVsU3uU",
+        "title": "Greetings in French: Les Salutations",
+        "channel": "Blabber Beasts",
+        "segments": [
+          [
+            12.5,
+            47
+          ],
+          [
+            68,
+            100
+          ]
+        ]
+      }
+    },
+    {
+      "id": "a_bientot",
+      "title": "Au revoir, à bientôt",
+      "file": "video/a_bientot.mp4",
+      "words": [
+        "au_revoir",
+        "a_bientot"
+      ],
+      "source": {
+        "youtube": "c0ck8dRATI0",
+        "title": "Au revoir, mes amis, À bientôt",
+        "channel": "A French Start",
+        "segments": [
+          [
+            0,
+            24
+          ]
+        ]
+      }
+    },
+    {
+      "id": "copains",
+      "title": "Au revoir les copains",
+      "file": "video/copains.mp4",
+      "words": [
+        "au_revoir"
+      ],
+      "source": {
+        "youtube": "MjxRf0pJaAg",
+        "title": "Au revoir les copains",
+        "channel": "Bilingual Beats",
+        "segments": [
+          [
+            6,
+            39
+          ]
+        ]
+      }
+    },
+    {
+      "id": "politesse",
+      "title": "S'il vous plaît, merci",
+      "file": "video/politesse.mp4",
+      "words": [
+        "sil_vous_plait",
+        "merci_beaucoup"
+      ],
+      "source": {
+        "youtube": "6okxdnFSxTY",
+        "title": "Les salutations et les formules de politesse",
+        "channel": "Eveiller mon enfant",
+        "segments": [
+          [
+            22.5,
+            34
+          ],
+          [
+            88,
+            117.5
+          ]
+        ]
+      }
+    },
+    {
+      "id": "oui_oui",
+      "title": "Merci, oui oui, s'il vous plaît",
+      "file": "video/oui_oui.mp4",
+      "words": [
+        "merci_beaucoup",
+        "sil_vous_plait"
+      ],
+      "source": {
+        "youtube": "HYCJTwysn9g",
+        "title": "Merci, Oui Oui, S'il Vous Plaît",
+        "channel": "Cricket Alphabet by DidiPop",
+        "segments": [
+          [
+            13,
+            58.5
+          ]
+        ]
+      }
+    },
+    {
+      "id": "magic",
+      "title": "The magic words",
+      "file": "video/magic.mp4",
+      "words": [
+        "sil_vous_plait",
+        "merci_beaucoup",
+        "au_revoir"
+      ],
+      "source": {
+        "youtube": "Uvfos552IbU",
+        "title": "Les 5 mots magiques",
+        "channel": "La Bande à Shadi",
+        "segments": [
+          [
+            7.5,
+            14.5
+          ],
+          [
+            39,
+            52.5
+          ],
+          [
+            65,
+            72
+          ],
+          [
+            109,
+            118.5
+          ]
+        ]
+      }
+    },
+    {
+      "id": "desole",
+      "title": "Je suis désolé",
+      "file": "video/desole.mp4",
+      "words": [
+        "desole"
+      ],
+      "source": {
+        "youtube": "KDYbgJ7Kw7Y",
+        "title": "La Chanson Je Suis Désolé",
+        "channel": "BoomBerry",
+        "segments": [
+          [
+            35,
+            70
+          ]
+        ]
+      }
+    },
+    {
+      "id": "felicitations",
+      "title": "Félicitations!",
+      "file": "video/felicitations.mp4",
+      "words": [
+        "felicitations"
+      ],
+      "source": {
+        "youtube": "0eisgoQYxUQ",
+        "title": "Félicitations - Chanson Française Joyeuse",
+        "channel": "Joyeux Anniversaire",
+        "segments": [
+          [
+            6,
+            34.5
+          ]
+        ]
+      }
+    },
+    {
+      "id": "weekend",
+      "title": "Bon week-end",
+      "file": "video/weekend.mp4",
+      "words": [
+        "bon_weekend"
+      ],
+      "source": {
+        "youtube": "ZYZv8kcLKoY",
+        "title": "How to Pronounce Bon week-end",
+        "channel": "French Pronunciation Guide",
+        "segments": [
+          [
+            0,
+            30
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lundi",
+      "title": "Bonjour lundi",
+      "file": "video/lundi.mp4",
+      "words": [
+        "a_lundi"
+      ],
+      "source": {
+        "youtube": "HCnYlvWklGQ",
+        "title": "Bonjour Lundi! comptine",
+        "channel": "FLE en vidéos",
+        "segments": [
+          [
+            0,
+            18
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fox",
+      "title": "De rien, bonne chance (with the fox)",
+      "file": null,
+      "words": [
+        "de_rien",
+        "bonne_chance",
+        "a_lundi",
+        "bon_weekend"
+      ],
+      "source": {
+        "youtube": "",
+        "title": "Fox lesson",
+        "channel": "this app",
+        "segments": []
+      }
+    }
+  ],
+  "app": {
+    "title": "Grade 2 Orange",
+    "subtitle": "French hellos",
+    "signature": "Designed by Anya Shaheryar"
+  }
+}
