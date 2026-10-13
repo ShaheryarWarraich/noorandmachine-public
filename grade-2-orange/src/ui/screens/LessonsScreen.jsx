@@ -114,3 +114,4 @@ function Check({ ctx, store, lesson, onFinish, onBack }) {
     </div>
   );
 }
+

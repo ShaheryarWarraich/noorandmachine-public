@@ -1,14 +1,14 @@
 # Grade 2 Orange
 
 A small offline app (PWA) for the grade-2 French quiz on eleven greetings and polite words: spelling, saying them, and what they mean.
-Same family as Muntaha's French Verbs: a pencil-drawn notebook page, now orange, with a little fox. All words on screen are English; every French word shows its English meaning and a picture.
+Same family as Muntaha's French Verbs: a pencil-drawn notebook page, now orange, with a little fox. Text is a plain rounded font (no cursive), so a grade-2 reader can read every accent. All words on screen are English; every French word shows its English meaning and a picture.
 
 The eleven words, exactly as the teacher wrote them: À lundi · Allô · Au revoir · À bientôt · Merci beaucoup · De rien · Désolé(e) · S'il vous plaît · Bonne chance · Bon week-end · Félicitations.
 
 ## How she uses it
 
 - **Lessons** – eleven short video clips (20–70 s each) cut from children's YouTube videos, one card per lesson in order. Watch, tap the words under the video to hear them, then **Quick check** (3 questions on that lesson's words; 2 right = a tick). The last lesson has no video: De rien and Bonne chance are "with the fox" (hear, say three times, quick check) because no child-friendly video covers them.
-- **Words** – the eleven word cards with pictures. Tap one: letters with the tricky ones glowing, a one-line tip, normal and slow audio, "sounds like", and when to say it.
+- **Words** – the eleven word cards with pictures. Tap one and it opens in place: letters with the tricky ones glowing, a one-line tip, normal and slow audio, "sounds like", when to say it, and a **Write it** box: the word hides and she spells it with the on-screen keyboard (counts toward the word's sticker).
 - **Rules** – nine best-practice cards (hats on letters, the big À keeps its hat, é says 'ay', silent last letters, c says 's', the ' and the -, Bon or Bonne, girl or boy, say it well), each showing its words with the relevant letters glowing.
 - **Practice** – no clock. Pick Everything / Spelling / Sounds / Meanings. Nine question kinds: type it (on-screen keyboard with é è ê à ô î ç ' -), pick the spelling, missing letter, build it (letter tiles), what does it mean, say it in French, listen (hear and pick), which sounds right (two clips, one with a common mistake), and say it (microphone when the browser has French speech recognition; otherwise an echo game). A wrong answer says "Not yet", shows the right one, lets her try again, and the word comes back a few questions later. A missing accent says "Nearly! Watch the accent."
 - **Star Round** – 10 questions, no clock. 9 right = three stars, 7 = two, 5 = one. Microphone questions never appear in rounds. Shows what she missed, and the **quiz-ready** meter.
